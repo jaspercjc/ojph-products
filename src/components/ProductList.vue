@@ -9,13 +9,18 @@
 					<th>Name</th>
 					<th>Description</th>
 					<th>Price</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
-				<ProductRow v-for="product in products" :key="product.id" :product="product" />
+				<ProductRow v-for="product in products" :key="product.id" :product="product">
+					<button type="button" class="btn btn-primary" :class="isDisabled(product)" @click="addToSlides(product)">Add to Slide</button>
+				</ProductRow>
 			</tbody>
 		</table>
 		<PaginationComponent :current-page="currentPage" :total-pages="totalPages" @page-changed="handlePageChange" />
+
+		<CarouselComponent :slides="slides" @remove-item="removeFromSlides" />
 	</div>
 </template>
 
@@ -24,12 +29,14 @@ import { ref, onMounted } from 'vue';
 import ProductRow from './ProductRow.vue';
 import PaginationComponent from './PaginationComponent.vue';
 import ProductSearch from './ProductSearch.vue';
+import CarouselComponent from './CarouselComponent.vue';
 
 const products = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = ref(0);
 const searchTerm = ref('');
+const slides = ref([]);
 
 const fetchProducts = async () => {
 	let skip = (currentPage.value - 1) * pageSize.value;
@@ -40,7 +47,7 @@ const fetchProducts = async () => {
 		urlParams += `&q=${searchTerm.value}`;
 	}
 	const fullUrl = url + urlParams;
-	fetch(fullUrl)
+	await fetch(fullUrl)
 		.then((response) => response.json())
 		.then((data) => {
 			products.value = data.products;
@@ -63,6 +70,15 @@ function handleSearch(keyword) {
 	fetchProducts();
 }
 
+const isDisabled = (product) => {
+	return slides.value.findIndex((x) => x.id == product.id) != -1 && 'disabled';
+};
+function addToSlides(product) {
+	slides.value = [...slides.value, product];
+}
+function removeFromSlides(index) {
+	slides.value.splice(index, 1);
+}
 onMounted(() => {
 	fetchProducts();
 });
