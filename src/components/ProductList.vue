@@ -1,6 +1,7 @@
 <template>
 	<div class="container">
 		<h1>Product List</h1>
+		<product-search @search="handleSearch"></product-search>
 		<table class="table">
 			<thead>
 				<tr>
@@ -22,16 +23,22 @@
 import { ref, onMounted } from 'vue';
 import ProductRow from './ProductRow.vue';
 import PaginationComponent from './PaginationComponent.vue';
+import ProductSearch from './ProductSearch.vue';
 
 const products = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = ref(0);
+const searchTerm = ref('');
 
 const fetchProducts = async () => {
 	let skip = (currentPage.value - 1) * pageSize.value;
 	let url = 'https://dummyjson.com/products';
 	let urlParams = `?limit=${pageSize.value}&skip=${skip}`;
+	if (searchTerm.value) {
+		url += '/search';
+		urlParams += `&q=${searchTerm.value}`;
+	}
 	const fullUrl = url + urlParams;
 	fetch(fullUrl)
 		.then((response) => response.json())
@@ -45,8 +52,14 @@ const fetchProducts = async () => {
 };
 
 function handlePageChange(page) {
-	console.log(page);
 	currentPage.value = page;
+	fetchProducts();
+}
+
+function handleSearch(keyword) {
+	console.log(keyword);
+
+	searchTerm.value = keyword;
 	fetchProducts();
 }
 
