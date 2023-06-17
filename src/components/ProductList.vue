@@ -14,7 +14,9 @@
 			</thead>
 			<tbody>
 				<ProductRow v-for="product in products" :key="product.id" :product="product">
-					<button type="button" class="btn btn-primary" :class="isDisabled(product)" @click="addToSlides(product)">Add to Slide</button>
+					<td>
+						<button type="button" class="btn btn-primary" :class="isDisabled(product)" @click="addToSlides(product)">Add to Slide</button>
+					</td>
 				</ProductRow>
 			</tbody>
 		</table>
