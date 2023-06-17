@@ -64,8 +64,6 @@ function handlePageChange(page) {
 }
 
 function handleSearch(keyword) {
-	console.log(keyword);
-
 	searchTerm.value = keyword;
 	fetchProducts();
 }
