@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<input type="search" v-model="searchTerm" @input="handleSearch" placeholder="Search products..." />
+	<div style="margin-bottom: 10px">
+		<input type="search" v-model="searchTerm" class="form-control" @input="handleSearch" placeholder="Search products..." />
 	</div>
 </template>
 
